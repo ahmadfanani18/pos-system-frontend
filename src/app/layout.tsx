@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito_Sans, Plus_Jakarta_Sans } from "next/font/google";
-import { ToastProvider } from "@/lib/toast";
-import { Toaster } from "@/components/ui/toaster";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const nunitoSans = Nunito_Sans({
@@ -28,10 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${nunitoSans.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <ToastProvider>
-          {children}
-          <Toaster />
-        </ToastProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
