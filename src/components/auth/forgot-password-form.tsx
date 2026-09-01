@@ -4,40 +4,39 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CheckCircle, Loader2 } from "lucide-react";
+import { MdEmail, MdArrowBack, MdCheck } from "react-icons/md";
+import { BiError, BiMailSend } from "react-icons/bi";
 import { authApi } from "@/lib/api";
 import { useToast } from "@/lib/toast";
 
-const forgotPasswordSchema = z.object({
-  email: z.string().email("Invalid email address"),
+const forgotSchema = z.object({
+  email: z.string().email("Email tidak valid"),
 });
 
-type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+type ForgotFormData = z.infer<typeof forgotSchema>;
 
 export function ForgotPasswordForm() {
-  const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ForgotPasswordFormData>({
-    resolver: zodResolver(forgotPasswordSchema),
+  } = useForm<ForgotFormData>({
+    resolver: zodResolver(forgotSchema),
   });
 
-  const onSubmit = async (data: ForgotPasswordFormData) => {
+  const onSubmit = async (data: ForgotFormData) => {
     setIsLoading(true);
     try {
       await authApi.forgotPassword(data.email);
       setIsSuccess(true);
     } catch (error: unknown) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to send reset email. Please try again.";
-      toast("error", message);
+        error instanceof Error ? error.message : "Gagal mengirim reset link";
+      toast({ type: "error", description: message });
     } finally {
       setIsLoading(false);
     }
@@ -45,74 +44,74 @@ export function ForgotPasswordForm() {
 
   if (isSuccess) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 py-8">
-        <div className="rounded-full bg-green-100 p-4">
-          <CheckCircle className="h-12 w-12 text-green-500" />
+      <div className="text-center py-8">
+        <div className="w-16 h-16 bg-success-50 rounded-full flex items-center justify-center mx-auto mb-4">
+          <MdCheck className="w-8 h-8 text-success-500" />
         </div>
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Check your email
-          </h2>
-          <p className="mt-2 text-sm text-gray-500">
-            We sent a password reset link to your email address.
-          </p>
-        </div>
+        <h3 className="font-display text-xl font-bold text-slate-800 mb-2">
+          Link Terkirim!
+        </h3>
+        <p className="text-slate-500 text-sm mb-6">
+          Kami telah mengirimkan link reset password ke email Anda. Silakan
+          cek inbox atau folder spam.
+        </p>
+        <a
+          href="/login"
+          className="inline-flex items-center gap-2 text-sm font-medium text-primary-500 hover:text-primary-700"
+        >
+          <MdArrowBack className="w-4 h-4" />
+          Kembali ke login
+        </a>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-gray-900">Reset password</h1>
-        <p className="text-sm text-gray-500">
-          Enter your email and we&apos;ll send you a reset link
-        </p>
-      </div>
-
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/* Email Field */}
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-semibold text-slate-700 mb-2"
         >
           Email
         </label>
-        <input
-          {...register("email")}
-          type="email"
-          id="email"
-          className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="you@example.com"
-        />
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <MdEmail className="w-5 h-5 text-slate-400" />
+          </div>
+          <input
+            {...register("email")}
+            type="email"
+            id="email"
+            placeholder="admin@toko.com"
+            className="input-field w-full h-12 pl-12 pr-4 rounded-xl text-slate-800 text-sm"
+          />
+        </div>
         {errors.email && (
-          <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+          <p className="text-red-500 text-sm mt-2">{errors.email.message}</p>
         )}
       </div>
 
+      {/* Submit Button */}
       <button
         type="submit"
         disabled={isLoading}
-        className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary w-full h-12 text-white font-semibold rounded-xl flex items-center justify-center gap-2 cursor-pointer mt-6 text-sm"
       >
-        {isLoading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Sending...
-          </>
-        ) : (
-          "Send reset link"
-        )}
+        {isLoading ? <span>Mengirim...</span> : <span>Kirim Link Reset</span>}
       </button>
 
-      <p className="text-center text-sm text-gray-500">
-        Remember your password?{" "}
+      {/* Back to Login */}
+      <div className="mt-6 text-center">
         <a
           href="/login"
-          className="font-medium text-blue-600 hover:text-blue-500"
+          className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
         >
-          Sign in
+          <MdArrowBack className="w-4 h-4" />
+          <span>Kembali ke halaman login</span>
         </a>
-      </p>
+      </div>
     </form>
   );
 }
