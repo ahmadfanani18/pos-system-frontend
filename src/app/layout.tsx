@@ -1,6 +1,4 @@
-import type { Metadata } from "next";
 import { Nunito_Sans, Plus_Jakarta_Sans } from "next/font/google";
-import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const nunitoSans = Nunito_Sans({
@@ -15,19 +13,18 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["500", "600", "700", "800"],
 });
 
-export const metadata: Metadata = {
-  title: "POS System",
-  description: "Manage your business smarter, faster, better",
-};
-
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
       className={`${nunitoSans.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { cookieStorage } from "./cookie-storage";
 
 const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -9,7 +10,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = cookieStorage.get("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,7 +28,7 @@ axiosClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
+        const refreshToken = cookieStorage.get("refreshToken");
         if (refreshToken) {
           const response = await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
@@ -35,15 +36,15 @@ axiosClient.interceptors.response.use(
           );
 
           const { accessToken, refreshToken: newRefreshToken } = response.data;
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", newRefreshToken);
+          cookieStorage.set("accessToken", accessToken, { expires: 1 });
+          cookieStorage.set("refreshToken", newRefreshToken, { expires: 7 });
 
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return axiosClient(originalRequest);
         }
       } catch {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        cookieStorage.remove("accessToken");
+        cookieStorage.remove("refreshToken");
         window.location.href = "/login";
         return Promise.reject(error);
       }

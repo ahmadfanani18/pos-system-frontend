@@ -18,6 +18,7 @@ import {
 import { BiCheckCircle } from "react-icons/bi";
 import { authApi } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { cookieStorage } from "@/lib/cookie-storage";
 
 const registerSchema = z
   .object({
@@ -53,14 +54,16 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
-      await authApi.register({
+      const response = await authApi.register({
         name: data.name,
         email: data.email,
         password: data.password,
       });
+      cookieStorage.set("accessToken", response.accessToken, { expires: 1 });
+      cookieStorage.set("refreshToken", response.refreshToken, { expires: 7 });
       toast({ type: "success", description: "Akun berhasil dibuat!" });
       setTimeout(() => {
-        router.push("/login");
+        router.push("/dashboard");
       }, 1500);
     } catch (error: unknown) {
       const message =

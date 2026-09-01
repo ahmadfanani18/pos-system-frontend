@@ -1,12 +1,10 @@
 "use client";
 
-import { ReactNode } from "react";
 import { LoginForm } from "@/components/auth/login-form";
-import AuthLayout from "../../layout";
 
 export default function LoginPage() {
   return (
-    <AuthLayout>
+    <>
       {/* Mobile Logo */}
       <div className="lg:hidden text-center mb-8">
         <div className="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -56,6 +54,6 @@ export default function LoginPage() {
       <p className="text-center text-slate-400 text-xs mt-8">
         &copy; 2026 POS System. Hak cipta dilindungi.
       </p>
-    </AuthLayout>
+    </>
   );
 }

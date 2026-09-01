@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authApi } from "@/lib/api";
+import { cookieStorage } from "@/lib/cookie-storage";
 import { Loader2 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -20,8 +21,8 @@ export default function DashboardPage() {
         setIsLoading(false);
       })
       .catch(() => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        cookieStorage.remove("accessToken");
+        cookieStorage.remove("refreshToken");
         router.push("/login");
       });
   }, [router]);

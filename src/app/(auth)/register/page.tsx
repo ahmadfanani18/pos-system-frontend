@@ -1,11 +1,10 @@
 "use client";
 
 import { RegisterForm } from "@/components/auth/register-form";
-import AuthLayout from "../../layout";
 
 export default function RegisterPage() {
   return (
-    <AuthLayout>
+    <>
       {/* Mobile Logo */}
       <div className="lg:hidden text-center mb-8">
         <div className="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -87,6 +86,6 @@ export default function RegisterPage() {
       <p className="text-center text-slate-400 text-xs mt-8">
         &copy; 2026 POS System. Hak cipta dilindungi.
       </p>
-    </AuthLayout>
+    </>
   );
 }

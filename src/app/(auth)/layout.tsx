@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
 import { ReactNode } from "react";
+import { ClientLayout } from "@/components/client-layout";
 import {
   BarChart3,
   Package,
@@ -81,7 +82,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
       {/* Right Panel - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
-        <div className="w-full max-w-[400px]">{children}</div>
+        <ClientLayout>
+          <div className="w-full max-w-[400px]">{children}</div>
+        </ClientLayout>
       </div>
     </div>
   );

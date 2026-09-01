@@ -55,14 +55,13 @@ export const authApi = {
     return response.data;
   },
 
-  register: async (
-    data: RegisterPayload
-  ): Promise<{ message: string }> => {
-    const response = await axiosClient.post<{ message: string }>(
-      "/auth/register",
-      data
-    );
-    return response.data;
+  register: async (data: RegisterPayload): Promise<AuthResponse> => {
+    const response = await axiosClient.post<{
+      success: boolean;
+      message: string;
+      data: AuthResponse;
+    }>("/auth/register", data);
+    return response.data.data;
   },
 
   forgotPassword: async (

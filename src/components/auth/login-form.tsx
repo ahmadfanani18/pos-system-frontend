@@ -10,6 +10,7 @@ import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { BiCheckCircle, BiError } from "react-icons/bi";
 import { authApi } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { cookieStorage } from "@/lib/cookie-storage";
 
 const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),
@@ -38,8 +39,8 @@ export function LoginForm() {
     setIsLoading(true);
     try {
       const response = await authApi.login(data.email, data.password);
-      localStorage.setItem("accessToken", response.accessToken);
-      localStorage.setItem("refreshToken", response.refreshToken);
+      cookieStorage.set("accessToken", response.accessToken, { expires: 1 });
+      cookieStorage.set("refreshToken", response.refreshToken, { expires: 7 });
       setIsSuccess(true);
       toast({ type: "success", description: "Login berhasil! Mengalihkan..." });
       setTimeout(() => {

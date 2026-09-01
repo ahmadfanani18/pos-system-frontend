@@ -12,7 +12,7 @@ export interface Toast {
 
 interface ToastContextValue {
   toasts: Toast[];
-  toast: (type: ToastType, message: string) => void;
+  toast: (options: { type: ToastType; description: string }) => void;
   dismiss: (id: string) => void;
 }
 
@@ -25,9 +25,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const toast = useCallback((type: ToastType, message: string) => {
+  const toast = useCallback(({ type, description }: { type: ToastType; description: string }) => {
     const id = crypto.randomUUID();
-    setToasts((prev) => [...prev, { id, type, message }]);
+    setToasts((prev) => [...prev, { id, type, message: description }]);
 
     setTimeout(() => {
       dismiss(id);
