@@ -41,11 +41,11 @@ interface UserResponse {
 
 export const authApi = {
   login: async (email: string, password: string): Promise<AuthResponse> => {
-    const response = await axiosClient.post<AuthResponse>("/auth/login", {
+    const response = await axiosClient.post<{ success: boolean; message: string; data: AuthResponse }>("/auth/login", {
       email,
       password,
     });
-    return response.data;
+    return response.data.data;
   },
 
   google: async (idToken: string): Promise<AuthResponse> => {
@@ -75,14 +75,14 @@ export const authApi = {
   },
 
   getMe: async (): Promise<UserResponse> => {
-    const response = await axiosClient.get<UserResponse>("/auth/me");
-    return response.data;
+    const response = await axiosClient.get<{ success: boolean; message: string; data: UserResponse }>("/auth/me");
+    return response.data.data;
   },
 
   refresh: async (refreshToken: string): Promise<AuthResponse> => {
-    const response = await axiosClient.post<AuthResponse>("/auth/refresh", {
+    const response = await axiosClient.post<{ success: boolean; message: string; data: AuthResponse }>("/auth/refresh", {
       refreshToken,
     });
-    return response.data;
+    return response.data.data;
   },
 };

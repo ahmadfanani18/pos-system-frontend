@@ -63,7 +63,7 @@ export function RegisterForm() {
       cookieStorage.set("refreshToken", response.refreshToken, { expires: 7 });
       toast({ type: "success", description: "Akun berhasil dibuat!" });
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/login");
       }, 1500);
     } catch (error: unknown) {
       const message =

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Role } from "@/lib/types/role";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
@@ -21,6 +21,7 @@ interface DashboardShellProps {
 export function DashboardShell({ children, user }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = () => {
     cookieStorage.remove("accessToken");
@@ -28,24 +29,25 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
     router.push("/login");
   };
 
-  const currentPath = typeof window !== "undefined" ? window.location.pathname : "";
-
   return (
-    <div className="min-h-screen bg-slate-25">
+    <div className="min-h-screen bg-slate-25 flex">
       <Sidebar
         user={user}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        currentPath={currentPath}
+        currentPath={pathname}
       />
-      <Header
-        user={user}
-        onMenuToggle={() => setSidebarOpen(true)}
-        onLogout={handleLogout}
-      />
-      <main className="pt-16 pb-20 md:pt-16 md:pb-0 md:ml-[260px]">
-        <div className="p-6">{children}</div>
-      </main>
+      <div className="flex-1 flex flex-col min-h-screen">
+        <Header
+          user={user}
+          onMenuToggle={() => setSidebarOpen(true)}
+          onLogout={handleLogout}
+          sidebarOpen={sidebarOpen}
+        />
+        <main className="pt-16 pb-20 md:pt-16 md:pb-0 flex-1">
+          <div>{children}</div>
+        </main>
+      </div>
       <BottomNav userRole={user.role} onMenuToggle={() => setSidebarOpen(true)} />
     </div>
   );

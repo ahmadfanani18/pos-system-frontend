@@ -14,13 +14,14 @@ interface HeaderProps {
   };
   onMenuToggle?: () => void;
   onLogout?: () => void;
+  sidebarOpen?: boolean;
 }
 
-export function Header({ user, onMenuToggle, onLogout }: HeaderProps) {
+export function Header({ user, onMenuToggle, onLogout, sidebarOpen }: HeaderProps) {
   return (
     <>
-      {/* Desktop Header (Fixed, sits above content) */}
-      <header className="hidden md:block h-16 bg-white border-b border-slate-100 fixed top-0 left-0 right-0 z-30">
+      {/* Desktop Header (Fixed at top, right of sidebar) */}
+      <header className="hidden md:flex h-16 bg-white border-b border-slate-100 fixed top-0 left-[260px] right-0 z-40">
         <div className="h-full flex items-center justify-between px-6">
           {/* Left Section: Mobile Menu Toggle */}
           <div className="flex items-center gap-4">
@@ -46,8 +47,8 @@ export function Header({ user, onMenuToggle, onLogout }: HeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Header (Compact version for mobile) */}
-      <header className="md:hidden h-14 bg-white border-b border-slate-100 fixed top-0 left-0 right-0 z-30">
+      {/* Mobile Header (Fixed for mobile) */}
+      <header className="md:hidden h-14 bg-white border-b border-slate-100 fixed top-0 left-0 right-0 z-50">
         <div className="h-full flex items-center justify-between px-4">
           {/* Left: Menu Toggle */}
           <button
